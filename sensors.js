@@ -1,7 +1,7 @@
 class Sensors {
     constructor(car) {
         this.car = car;
-        this.rayCount = 6;
+        this.rayCount = 7;
         this.rayLength = 120;
         this.raySpread = Math.PI / 1.5;
 
@@ -13,8 +13,10 @@ class Sensors {
         this.#castRays();
         this.readings = [];
         for (let i = 0; i < this.rays.length; i++) {
-            this.readings.push(
-                this.#getReading(this.rays[i], roadBorders,traffic));
+            this.readings.push(this.#getReading(
+                this.rays[i], roadBorders,traffic
+                )
+            );
         }
     }
 

@@ -11,8 +11,13 @@ class Car{
         this.atrito=0.05;
         this.angle=0;
         this.damaged=false;
-        if(control_type=="KEYS"){
+
+        this.useBrain=control_type=="AI";
+        if(control_type !="NOKEYS"){//just to create a brain/sensor if is the main car that we want to train.
             this.sensor= new Sensors(this);
+            this.brain= new NeuralNetwork(//creating a neural network with 3 layers of nodes.
+                [this.sensor.rayCount,6,4]    
+            );
         }
         
         this.controls=new Controls(control_type);
@@ -25,6 +30,16 @@ class Car{
         }
         if(this.sensor){
             this.sensor.update(roadBorders,traffic);
+            //save the offset of each sensor
+            //map is an advanced method of javascript that goes through all the elements "s" and apply the function to return a value, in our case,"s==null?0:1-s.offset"
+            const offset=this.sensor.readings.map(s=>s==null?0:1-s.offset); 
+            const outputs= NeuralNetwork.feedForward(offset,this.brain);//use the offset to "feedforward" the NN
+            if(this.useBrain){
+                this.controls.forward=outputs[0];
+                this.controls.left=outputs[1];
+                this.controls.right=outputs[2];
+                this.controls.reverse=outputs[3];
+            }
         }
     }
     #assessDamage(roadBorders,traffic){
@@ -131,6 +146,9 @@ function polysIntersect(poly1,poly2){
         }
     }
     return false;
+}
+function lerp(A, B, t) {
+    return A + (B - A) * t;
 }
 function getIntersection(A, B, C, D) {
     const tTop = (D.x - C.x) * (A.y - C.y) - (D.y - C.y) * (A.x - C.x);
