@@ -113,23 +113,23 @@ class Car{
         this.y-=Math.cos(this.angle )*this.speed;
     }   
 
-draw(ctx, color){
+draw(ctx, color,drawSensor=false){
     if(this.damaged){
         ctx.fillStyle="gray";
     }else{
         ctx.fillStyle=color ;
     }
     
-        ctx.beginPath();
-        ctx.moveTo(this.polygon[0].x,this.polygon[0].y);
-        for(let i=1;i<this.polygon.length;i++){
-            ctx.lineTo(this.polygon[i].x,this.polygon[i].y);
-        }
-        ctx.fill();
-        if(this.sensor){
-            this.sensor.draw(ctx);
-        }
+    ctx.beginPath();
+    ctx.moveTo(this.polygon[0].x,this.polygon[0].y);
+    for(let i=1;i<this.polygon.length;i++){
+        ctx.lineTo(this.polygon[i].x,this.polygon[i].y);
     }
+    ctx.fill();
+    if(this.sensor && drawSensor){
+        this.sensor.draw(ctx);
+    }
+}
 }
 function polysIntersect(poly1,poly2){
     for(let i=0;i<poly1.length;i++){
